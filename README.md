@@ -82,6 +82,17 @@
             background: #ffffff;
         }
 
+        .exact-val-box {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #475569;
+            text-align: center;
+            border: 1px dashed #cbd5e1;
+        }
+
         .display-box { margin-top: 20px; padding: 20px; border-radius: 20px; text-align: center; color: white; }
         .target-box { background: linear-gradient(135deg, #0284c7, #0ea5e9); }
         .current-box { background: linear-gradient(135deg, #1d4ed8, #2563eb); }
@@ -165,8 +176,13 @@
             <h3>👥 عدد الموظفين</h3>
             <label>عدد الأجانب:</label>
             <input type="number" id="expats" value="0" min="0" oninput="run()">
+            
             <label>عدد السعوديين الحالي:</label>
             <input type="number" id="saudis" value="0" min="0" oninput="run()">
+
+            <div class="exact-val-box">
+                العدد المطلوب: <strong id="exactDisplay">0.00</strong>
+            </div>
 
             <div class="display-box current-box">
                 <span style="font-size: 0.8rem; opacity: 0.9;">التوطين الحالي</span>
@@ -201,8 +217,8 @@
         it_pro: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 7000 ريال"], note: "تشمل المبرمجين والتقنيين." },
         it_support: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 5000 ريال"], note: "الدعم الفني والمساندة." },
         marketing: { rates: {"default":0.6}, salaries: ["الحد الأدنى: 5500 ريال"], note: "توطين مهن التسويق." },
-        sales: { rates: {"default":0.6}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين مهن المبيعات." },
-        procurement: { rates: {"default":0.7}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين المشتريات." },
+        sales: { rates: {"default":0.6}, salaries: ["حسب النظام"], note: "توطين مهن المبيعات." },
+        procurement: { rates: {"default":0.7}, salaries: ["حسب النظام"], note: "توطين المشتريات." },
         legal: { rates: {"default":0.7}, salaries: ["الحد الأدنى: 5500 ريال"], note: "المهن القانونية والاستشارية." }
     };
 
@@ -217,33 +233,24 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
-        // تطبيق معادلة "معامل التوطين" بناءً على شرحك
-        // مثال القانونية 70%: 70 / (100 - 70) = 2.333
+        // 1. حسبة معامل التوطين والعدد الخام
         const factor = targetRate / (1 - targetRate);
+        const totalRawNeeded = factor * expats;
         
-        // حساب عدد السعوديين المطلوبين (بدقة)
-        const saudisNeededRaw = factor * expats;
+        // 2. الفارق الخام قبل أي تقريب
+        let rawDiff = totalRawNeeded - saudisCurrent;
+        document.getElementById("exactDisplay").innerText = rawDiff > 0 ? rawDiff.toFixed(2) : "0.00";
+
+        // 3. قاعدة الجبر الصارمة (.50 ينجبر للي فوق | .49 ينجبر للي تحت)
+        // نجبر إجمالي المطلوب أولاً بناءً على كسر الـ 0.5
+        let totalNeededAfterJabr = Math.round(totalRawNeeded); 
         
-        // حساب الفرق بين المطلوب والحالي
-        let diff = saudisNeededRaw - saudisCurrent;
+        // النقص الفعلي بعد الجبر
+        let missing = totalNeededAfterJabr - saudisCurrent;
 
-        let missing = 0;
-        let isCompliant = false;
-
-        // قاعدة الجبر الخاصة بك:
-        // إذا كان الفرق 0.4 وأقل -> ملتزم
-        // إذا كان الفرق أكثر من 0.4 -> غير ملتزم ويجبر للأعلى (مثال: 14.5 تصير 15)
-        if (diff <= 0.4) {
-            isCompliant = true;
-        } else {
-            isCompliant = false;
-            missing = Math.ceil(diff); 
-        }
-
-        // حساب النسبة الحالية للعرض فقط
+        // تحديث الواجهة
         const totalNow = expats + saudisCurrent;
         const currentRate = totalNow > 0 ? (saudisCurrent / totalNow) : 0;
-
         document.getElementById("targetDisplay").innerText = (targetRate * 100) + "%";
         document.getElementById("currentDisplay").innerText = (currentRate * 100).toFixed(0) + "%";
 
@@ -254,7 +261,7 @@
         badge.style.display = "block";
         details.style.display = "block";
 
-        if (isCompliant) {
+        if (missing <= 0) {
             badge.innerText = "ملتزم";
             badge.className = "status-badge ok";
             needed.style.display = "none";
