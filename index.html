@@ -237,18 +237,46 @@
         const factor = targetRate / (1 - targetRate);
         const totalRawNeeded = factor * expats;
         
-        // 2. حساب الفارق الحقيقي بالبوينت لعرضه في الخانة الرمادية
-        let diffRaw = totalRawTargetSubtractCurrent = totalRawNeeded - saudisCurrent;
+        // 2. حساب النقص الحقيقي (المطلوب - الحالي)
+        let diff = totalRawNeeded - saudisCurrent;
+
+        // إظهار الرقم الدقيق بالبوينت دائماً في الخانة الرمادية
+        document.getElementById("exactDisplay").innerText = diff > 0 ? diff.toFixed(2) : "0.00";
+
+        // 3. قاعدة الالتزام والجبر الصارمة:
+        let isCompliant = false;
+        let missingToHire = 0;
+
+        // نأخذ الكسر فقط من النقص (مثلاً 4.5 -> الكسر هو 0.5)
+        // ملاحظة: نستخدم Math.max لضمان عدم التعامل مع أرقام سالبة
+        let checkVal = Math.max(0, diff);
+        let fraction = checkVal % 1; 
+
+        // إذا كان الفارق 0.50 أو أعلى، أو الرقم الصحيح أكبر من 0 (مثل 1.2)
+        // لكن حسب طلبك: 4.5 -> 5 وغير ملتزم | 4.49 -> 4 و ملتزم (لو عندك 4)
         
-        // عرض الفارق الدقيق (0.5، 2.4، 4.5 إلخ)
-        document.getElementById("exactDisplay").innerText = diffRaw > 0 ? diffRaw.toFixed(2) : "0.00";
-        
-        // 3. قاعدة الجبر (التقريب المنطقي):
-        // 0.5 وأعلى ينجبر للي فوق، 0.49 وأقل ينجبر للي تحت
-        let roundedTotalNeeded = Math.round(totalRawNeeded);
-        
-        // 4. حساب النقص المتبقي بعد الجبر
-        let missingForTawtheef = roundedTotalNeeded - saudisCurrent;
+        // الحل البرمجي الأدق لمنطقك:
+        if (diff <= 0) {
+            isCompliant = true;
+            missingToHire = 0;
+        } else {
+            // إذا كان فيه كسر، نشوف هل هو 0.5 فأعلى؟
+            if (fraction >= 0.5) {
+                isCompliant = false; // غير ملتزم
+                missingToHire = Math.ceil(diff); // يجبر للأعلى
+            } else {
+                // الكسر 0.49 وأقل، ينجبر للأصغر
+                // إذا كان الرقم بعد الجبر للأصغر يساوي 0، يعني أنت ملتزم
+                if (Math.floor(diff) === 0) {
+                    isCompliant = true;
+                    missingToHire = 0;
+                } else {
+                    // مثال 2.4 تنجبر لـ 2، لكنها لا تزال "غير ملتزم" لو ما عندك الـ 2
+                    isCompliant = false;
+                    missingToHire = Math.floor(diff);
+                }
+            }
+        }
 
         // تحديث الواجهة
         const totalNow = expats + saudisCurrent;
@@ -263,8 +291,7 @@
         badge.style.display = "block";
         details.style.display = "block";
 
-        // إذا كان النقص بعد الجبر صفر أو أقل يعني ملتزم
-        if (missingForTawtheef <= 0) {
+        if (isCompliant) {
             badge.innerText = "ملتزم";
             badge.className = "status-badge ok";
             needed.style.display = "none";
@@ -272,7 +299,7 @@
             badge.innerText = "غير ملتزم";
             badge.className = "status-badge no";
             needed.style.display = "block";
-            document.getElementById("neededCount").innerText = missingForTawtheef;
+            document.getElementById("neededCount").innerText = missingToHire;
         }
 
         document.getElementById("salaryStack").innerHTML = job.salaries.map(s => `<div class="info-cell">${s}</div>`).join('');
