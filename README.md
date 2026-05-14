@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة التوطين</title>
+    <title>حاسبة التوطين المطورة</title>
     <style>
         :root {
             --header-bg: #475569; 
@@ -63,9 +63,8 @@
         }
 
         .card:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
             box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            z-index: 5;
         }
 
         .settings-card { background-color: var(--sky-soft); border-top: 8px solid #0ea5e9; }
@@ -80,17 +79,6 @@
             width: 100%; padding: 12px; margin-top: 8px;
             border: 1px solid #cbd5e1; border-radius: 15px; font-size: 1rem;
             background: #ffffff;
-        }
-
-        .exact-val-box {
-            margin-top: 15px;
-            padding: 10px;
-            background: #f1f5f9;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            color: #475569;
-            text-align: center;
-            border: 1px dashed #cbd5e1;
         }
 
         .display-box { margin-top: 20px; padding: 20px; border-radius: 20px; text-align: center; color: white; }
@@ -137,11 +125,12 @@
 
 <div class="container">
     <header>
-        <h1>حاسبة التوطين</h1>
-        <p>نظام تفاعلي متقدم لمتابعة نسب التوطين والاشتراطات المهنية</p>
+        <h1>حاسبة التوطين الذكية</h1>
+        <p>نظام دقيق لحساب الاحتياج الفعلي بناءً على قواعد التقريب الرياضي المعتمدة</p>
     </header>
 
     <div class="dashboard-grid">
+        <!-- الخيارات -->
         <div class="card settings-card">
             <h3>📋 معايير المهنة</h3>
             <label>السنة المستهدفة:</label>
@@ -167,37 +156,35 @@
             </select>
 
             <div class="display-box target-box">
-                <span style="font-size: 0.8rem; opacity: 0.9;">المستهدف المطلوب</span>
+                <span style="font-size: 0.8rem; opacity: 0.9;">النسبة المستهدفة</span>
                 <strong id="targetDisplay" class="big-val">0%</strong>
             </div>
         </div>
 
+        <!-- المدخلات -->
         <div class="card stats-card">
-            <h3>👥 عدد الموظفين</h3>
-            <label>عدد الأجانب:</label>
+            <h3>👥 القوى العاملة</h3>
+            <label>عدد الأجانب (في هذه المهنة):</label>
             <input type="number" id="expats" value="0" min="0" oninput="run()">
             
-            <label>عدد السعوديين الحالي:</label>
+            <label>عدد السعوديين (الحالي):</label>
             <input type="number" id="saudis" value="0" min="0" oninput="run()">
 
-            <div class="exact-val-box">
-                العدد المطلوب: <strong id="exactDisplay">0.00</strong>
-            </div>
-
             <div class="display-box current-box">
-                <span style="font-size: 0.8rem; opacity: 0.9;">التوطين الحالي</span>
+                <span style="font-size: 0.8rem; opacity: 0.9;">نسبة التوطين الحالية</span>
                 <strong id="currentDisplay" class="big-val">0%</strong>
             </div>
         </div>
 
+        <!-- النتائج -->
         <div class="card result-card">
-            <h3>📑 نتيجة الالتزام</h3>
+            <h3>📑 حالة الامتثال</h3>
             <div id="statusBadge" class="status-badge" style="display:none;"></div>
 
             <div id="neededArea" class="needed-alert" style="display:none;">
-                <span style="font-size: 0.85rem; font-weight: 700;">أنت بحاجة لتوظيف:</span>
+                <span style="font-size: 0.85rem; font-weight: 700;">المتبقي لتحقيق النسبة:</span>
                 <strong id="neededCount" style="font-size: 3rem; display: block;">0</strong>
-                <span style="font-size: 0.8rem;">سعودي إضافي للالتزام</span>
+                <span style="font-size: 0.8rem;">موظف سعودي إضافي</span>
             </div>
 
             <div id="detailsArea" style="display:none;">
@@ -217,8 +204,8 @@
         it_pro: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 7000 ريال"], note: "تشمل المبرمجين والتقنيين." },
         it_support: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 5000 ريال"], note: "الدعم الفني والمساندة." },
         marketing: { rates: {"default":0.6}, salaries: ["الحد الأدنى: 5500 ريال"], note: "توطين مهن التسويق." },
-        sales: { rates: {"default":0.6}, salaries: ["حسب النظام"], note: "توطين مهن المبيعات." },
-        procurement: { rates: {"default":0.7}, salaries: ["حسب النظام"], note: "توطين المشتريات." },
+        sales: { rates: {"default":0.6}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين مهن المبيعات." },
+        procurement: { rates: {"default":0.7}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين المشتريات." },
         legal: { rates: {"default":0.7}, salaries: ["الحد الأدنى: 5500 ريال"], note: "المهن القانونية والاستشارية." }
     };
 
@@ -233,37 +220,26 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
-        const factor = targetRate / (1 - targetRate);
-        const totalRawNeeded = factor * expats;
+        /* 
+           المعادلة الصحيحة: 
+           العدد الكلي المطلوب = (عدد الأجانب) / (1 - نسبة التوطين المستهدفة)
+           عدد السعوديين المطلوب = العدد الكلي - عدد الأجانب
+        */
+        const totalStaffRequired = expats / (1 - targetRate);
+        const exactSaudisNeeded = totalStaffRequired - expats;
         
-        // حساب الفارق الخام (العدد المطلوب في الخانة الرمادية)
-        let diff = totalRawNeeded - saudisCurrent;
-        document.getElementById("exactDisplay").innerText = diff.toFixed(2);
-
-        let isCompliant = true;
-        let missingToHire = 0;
-
-        // قاعدة الـ 0.50 الصارمة (للقرار والجبر)
-        // نستخدم Math.round لأنه رياضياً يحقق قاعدتك (0.5 ينجبر للأعلى و0.49 للأسفل)
-        let roundedNeededTotal = Math.round(totalRawNeeded);
+        // تطبيق قاعدة الجبر: 0.5 فما فوق يجبر للأعلى، أقل من ذلك يجبر للأقل
+        const finalRequiredCount = Math.round(exactSaudisNeeded);
         
-        // النقص الفعلي بعد الجبر
-        let finalMissing = roundedNeededTotal - saudisCurrent;
+        // حساب النقص
+        let missing = finalRequiredCount - saudisCurrent;
 
-        // تحديد الالتزام بناءً على الفارق 0.50
-        if (diff >= 0.50) {
-            isCompliant = false;
-            missingToHire = finalMissing;
-        } else {
-            isCompliant = true;
-            missingToHire = 0;
-        }
-
-        // تحديث الواجهة
-        const totalNow = expats + saudisCurrent;
-        const currentRate = totalNow > 0 ? (saudisCurrent / totalNow) : 0;
-        document.getElementById("targetDisplay").innerText = (targetRate * 100) + "%";
-        document.getElementById("currentDisplay").innerText = (currentRate * 100).toFixed(0) + "%";
+        // تحديث واجهة النسبة الحالية
+        const currentTotal = expats + saudisCurrent;
+        const currentRate = currentTotal > 0 ? (saudisCurrent / currentTotal) : 0;
+        
+        document.getElementById("targetDisplay").innerText = (targetRate * 100).toFixed(0) + "%";
+        document.getElementById("currentDisplay").innerText = (currentRate * 100).toFixed(1) + "%";
 
         const badge = document.getElementById("statusBadge");
         const needed = document.getElementById("neededArea");
@@ -272,15 +248,15 @@
         badge.style.display = "block";
         details.style.display = "block";
 
-        if (isCompliant) {
-            badge.innerText = "ملتزم";
+        if (missing <= 0) {
+            badge.innerText = "ملتزم ✅";
             badge.className = "status-badge ok";
             needed.style.display = "none";
         } else {
-            badge.innerText = "غير ملتزم";
+            badge.innerText = "غير ملتزم ❌";
             badge.className = "status-badge no";
             needed.style.display = "block";
-            document.getElementById("neededCount").innerText = missingToHire;
+            document.getElementById("neededCount").innerText = missing;
         }
 
         document.getElementById("salaryStack").innerHTML = job.salaries.map(s => `<div class="info-cell">${s}</div>`).join('');
