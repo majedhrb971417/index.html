@@ -217,33 +217,23 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
-        // تطبيق معادلة "معامل التوطين" بناءً على شرحك
-        // مثال القانونية 70%: 70 / (100 - 70) = 2.333
+        // 1. حساب معامل التوطين (النسبة المطلوبة مقابل كل أجنبي واحد)
         const factor = targetRate / (1 - targetRate);
         
-        // حساب عدد السعوديين المطلوبين (بدقة)
-        const saudisNeededRaw = factor * expats;
+        // 2. حساب عدد السعوديين المطلوبين "خام"
+        const rawNeeded = factor * expats;
         
-        // حساب الفرق بين المطلوب والحالي
-        let diff = saudisNeededRaw - saudisCurrent;
+        // 3. قاعدة التقريب الرياضية (Math.round):
+        // 2.49 تصبح 2
+        // 2.50 تصبح 3
+        let finalRequired = Math.round(rawNeeded);
+        
+        // 4. حساب النقص الفعلي
+        let missing = finalRequired - saudisCurrent;
 
-        let missing = 0;
-        let isCompliant = false;
-
-        // قاعدة الجبر الخاصة بك:
-        // إذا كان الفرق 0.4 وأقل -> ملتزم
-        // إذا كان الفرق أكثر من 0.4 -> غير ملتزم ويجبر للأعلى (مثال: 14.5 تصير 15)
-        if (diff <= 0.4) {
-            isCompliant = true;
-        } else {
-            isCompliant = false;
-            missing = Math.ceil(diff); 
-        }
-
-        // حساب النسبة الحالية للعرض فقط
+        // تحديث الواجهة
         const totalNow = expats + saudisCurrent;
         const currentRate = totalNow > 0 ? (saudisCurrent / totalNow) : 0;
-
         document.getElementById("targetDisplay").innerText = (targetRate * 100) + "%";
         document.getElementById("currentDisplay").innerText = (currentRate * 100).toFixed(0) + "%";
 
@@ -254,7 +244,7 @@
         badge.style.display = "block";
         details.style.display = "block";
 
-        if (isCompliant) {
+        if (missing <= 0) {
             badge.innerText = "ملتزم";
             badge.className = "status-badge ok";
             needed.style.display = "none";
