@@ -233,14 +233,21 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
+        // حساب معامل التوطين بناءً على طريقتك: 
+        // 70 / (100 - 70) = 2.333
         const factor = targetRate / (1 - targetRate);
         const rawNeeded = factor * expats;
         
+        // عرض العدد المطلوب الدقيق بالبوينت
         document.getElementById("exactDisplay").innerText = rawNeeded.toFixed(2);
         
+        // قاعدة التقريب الرياضية: أقل من 0.5 ينزل، 0.5 وأعلى يطلع
         let finalRequired = Math.round(rawNeeded);
+        
+        // حساب النقص
         let missing = finalRequired - saudisCurrent;
 
+        // تحديث الواجهة
         const totalNow = expats + saudisCurrent;
         const currentRate = totalNow > 0 ? (saudisCurrent / totalNow) : 0;
         document.getElementById("targetDisplay").innerText = (targetRate * 100) + "%";
