@@ -82,6 +82,18 @@
             background: #ffffff;
         }
 
+        /* تنسيق خانة العدد المطلوب الدقيق */
+        .exact-val-box {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #475569;
+            text-align: center;
+            border: 1px dashed #cbd5e1;
+        }
+
         .display-box { margin-top: 20px; padding: 20px; border-radius: 20px; text-align: center; color: white; }
         .target-box { background: linear-gradient(135deg, #0284c7, #0ea5e9); }
         .current-box { background: linear-gradient(135deg, #1d4ed8, #2563eb); }
@@ -165,8 +177,13 @@
             <h3>👥 عدد الموظفين</h3>
             <label>عدد الأجانب:</label>
             <input type="number" id="expats" value="0" min="0" oninput="run()">
+            
             <label>عدد السعوديين الحالي:</label>
             <input type="number" id="saudis" value="0" min="0" oninput="run()">
+
+            <div class="exact-val-box">
+                العدد المطلوب (دقيق): <strong id="exactDisplay">0.00</strong>
+            </div>
 
             <div class="display-box current-box">
                 <span style="font-size: 0.8rem; opacity: 0.9;">التوطين الحالي</span>
@@ -217,15 +234,16 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
-        // 1. حساب معامل التوطين (النسبة المطلوبة مقابل كل أجنبي واحد)
+        // 1. حساب معامل التوطين
         const factor = targetRate / (1 - targetRate);
         
-        // 2. حساب عدد السعوديين المطلوبين "خام"
+        // 2. حساب عدد السعوديين المطلوبين "خام" (بالبوينت)
         const rawNeeded = factor * expats;
         
-        // 3. قاعدة التقريب الرياضية (Math.round):
-        // 2.49 تصبح 2
-        // 2.50 تصبح 3
+        // عرض القيمة بالبوينت في الخانة الجديدة
+        document.getElementById("exactDisplay").innerText = rawNeeded.toFixed(2);
+        
+        // 3. قاعدة التقريب الرياضية حسب طلبك (أقل من 0.5 ينزل، 0.5 وأعلى يطلع)
         let finalRequired = Math.round(rawNeeded);
         
         // 4. حساب النقص الفعلي
