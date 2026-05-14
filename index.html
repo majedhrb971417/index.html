@@ -233,30 +233,28 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
-        // 1. حساب إجمالي السعوديين المطلوبين "خام"
         const factor = targetRate / (1 - targetRate);
         const totalRawNeeded = factor * expats;
         
-        // 2. حساب الفارق الدقيق بالبوينت
+        // 1. حساب الفارق الحقيقي (المطلوب - الحالي) وإظهاره كما هو حتى لو سالب
         let diff = totalRawNeeded - saudisCurrent;
-        document.getElementById("exactDisplay").innerText = diff > 0 ? diff.toFixed(2) : "0.00";
+        document.getElementById("exactDisplay").innerText = diff.toFixed(2);
 
-        // 3. قاعدة الجبر والالتزام (تعتمد على الفارق مباشرة)
         let isCompliant = true;
-        let missing = 0;
+        let missingCount = 0;
 
-        if (diff > 0) {
-            // نتحقق من الكسر في الفارق
-            let fraction = diff % 1;
-            if (fraction >= 0.5) {
-                // الفارق 0.50 فأكثر -> غير ملتزم ويجبر للأعلى
-                isCompliant = false;
-                missing = Math.ceil(diff);
-            } else {
-                // الفارق أقل من 0.50 -> ملتزم
-                isCompliant = true;
-                missing = 0;
-            }
+        // 2. قاعدة 0.50 الصارمة للالتزام والجبر
+        // نأخذ الكسر من الرقم (مثلاً 0.51 كسرها 0.51)
+        let fraction = diff % 1;
+
+        if (diff >= 0.50) {
+            isCompliant = false;
+            // أي رقم كسر فيه 0.50 أو أعلى ينجبر للي فوق (مثلاً 15.50 تصير 16)
+            missingCount = Math.ceil(diff);
+        } else {
+            // أي رقم 0.49 وأقل (بما في ذلك السوالب) يعتبر ملتزم
+            isCompliant = true;
+            missingCount = 0;
         }
 
         // تحديث الواجهة
@@ -280,7 +278,7 @@
             badge.innerText = "غير ملتزم";
             badge.className = "status-badge no";
             needed.style.display = "block";
-            document.getElementById("neededCount").innerText = missing;
+            document.getElementById("neededCount").innerText = missingCount;
         }
 
         document.getElementById("salaryStack").innerHTML = job.salaries.map(s => `<div class="info-cell">${s}</div>`).join('');
