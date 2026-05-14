@@ -236,25 +236,27 @@
         const factor = targetRate / (1 - targetRate);
         const totalRawNeeded = factor * expats;
         
-        // 1. حساب الفارق الحقيقي (المطلوب - الحالي) وإظهاره كما هو حتى لو سالب
+        // حساب الفارق الخام (العدد المطلوب في الخانة الرمادية)
         let diff = totalRawNeeded - saudisCurrent;
         document.getElementById("exactDisplay").innerText = diff.toFixed(2);
 
         let isCompliant = true;
-        let missingCount = 0;
+        let missingToHire = 0;
 
-        // 2. قاعدة 0.50 الصارمة للالتزام والجبر
-        // نأخذ الكسر من الرقم (مثلاً 0.51 كسرها 0.51)
-        let fraction = diff % 1;
+        // قاعدة الـ 0.50 الصارمة (للقرار والجبر)
+        // نستخدم Math.round لأنه رياضياً يحقق قاعدتك (0.5 ينجبر للأعلى و0.49 للأسفل)
+        let roundedNeededTotal = Math.round(totalRawNeeded);
+        
+        // النقص الفعلي بعد الجبر
+        let finalMissing = roundedNeededTotal - saudisCurrent;
 
+        // تحديد الالتزام بناءً على الفارق 0.50
         if (diff >= 0.50) {
             isCompliant = false;
-            // أي رقم كسر فيه 0.50 أو أعلى ينجبر للي فوق (مثلاً 15.50 تصير 16)
-            missingCount = Math.ceil(diff);
+            missingToHire = finalMissing;
         } else {
-            // أي رقم 0.49 وأقل (بما في ذلك السوالب) يعتبر ملتزم
             isCompliant = true;
-            missingCount = 0;
+            missingToHire = 0;
         }
 
         // تحديث الواجهة
@@ -278,7 +280,7 @@
             badge.innerText = "غير ملتزم";
             badge.className = "status-badge no";
             needed.style.display = "block";
-            document.getElementById("neededCount").innerText = missingCount;
+            document.getElementById("neededCount").innerText = missingToHire;
         }
 
         document.getElementById("salaryStack").innerHTML = job.salaries.map(s => `<div class="info-cell">${s}</div>`).join('');
