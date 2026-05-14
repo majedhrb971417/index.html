@@ -27,7 +27,6 @@
 
         .container { max-width: 1250px; margin: auto; }
 
-        /* تعديل حجم العنوان ليتناسب مع عرض الخانات بالأسفل */
         header {
             background: var(--header-bg);
             padding: 40px; 
@@ -36,7 +35,7 @@
             margin: 0 auto 40px auto;
             color: #fff; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 100%; /* العرض كامل ليتساوى مع شبكة الخانات */
+            width: 100%;
         }
 
         header h1 { font-size: 2.2rem; margin-bottom: 10px; }
@@ -132,7 +131,6 @@
     </header>
 
     <div class="dashboard-grid">
-        
         <div class="card settings-card">
             <h3>📋 معايير المهنة</h3>
             <label>السنة المستهدفة:</label>
@@ -167,7 +165,6 @@
             <h3>👥 عدد الموظفين</h3>
             <label>عدد الأجانب:</label>
             <input type="number" id="expats" value="0" min="0" oninput="run()">
-            
             <label>عدد السعوديين الحالي:</label>
             <input type="number" id="saudis" value="0" min="0" oninput="run()">
 
@@ -193,7 +190,6 @@
                 <div id="conditionInfo" class="condition-cell"></div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -214,20 +210,42 @@
         const jobKey = document.getElementById("jobSelect").value;
         const year = document.getElementById("yearSelect").value;
         const expats = parseInt(document.getElementById("expats").value) || 0;
-        const saudis = parseInt(document.getElementById("saudis").value) || 0;
+        const saudisCurrent = parseInt(document.getElementById("saudis").value) || 0;
 
         if (!jobKey) return;
 
         const job = dataBank[jobKey];
-        const target = job.rates[year] || job.rates["default"];
-        const total = expats + saudis;
-        const current = total > 0 ? (saudis / total) : 0;
+        const targetRate = job.rates[year] || job.rates["default"];
+        
+        // تطبيق معادلة "معامل التوطين" بناءً على شرحك
+        // مثال القانونية 70%: 70 / (100 - 70) = 2.333
+        const factor = targetRate / (1 - targetRate);
+        
+        // حساب عدد السعوديين المطلوبين (بدقة)
+        const saudisNeededRaw = factor * expats;
+        
+        // حساب الفرق بين المطلوب والحالي
+        let diff = saudisNeededRaw - saudisCurrent;
 
-        let totalSaudisNeeded = Math.ceil((target * expats) / (1 - target));
-        let missing = totalSaudisNeeded - saudis;
+        let missing = 0;
+        let isCompliant = false;
 
-        document.getElementById("targetDisplay").innerText = (target * 100) + "%";
-        document.getElementById("currentDisplay").innerText = (current * 100).toFixed(0) + "%";
+        // قاعدة الجبر الخاصة بك:
+        // إذا كان الفرق 0.4 وأقل -> ملتزم
+        // إذا كان الفرق أكثر من 0.4 -> غير ملتزم ويجبر للأعلى (مثال: 14.5 تصير 15)
+        if (diff <= 0.4) {
+            isCompliant = true;
+        } else {
+            isCompliant = false;
+            missing = Math.ceil(diff); 
+        }
+
+        // حساب النسبة الحالية للعرض فقط
+        const totalNow = expats + saudisCurrent;
+        const currentRate = totalNow > 0 ? (saudisCurrent / totalNow) : 0;
+
+        document.getElementById("targetDisplay").innerText = (targetRate * 100) + "%";
+        document.getElementById("currentDisplay").innerText = (currentRate * 100).toFixed(0) + "%";
 
         const badge = document.getElementById("statusBadge");
         const needed = document.getElementById("neededArea");
@@ -236,7 +254,7 @@
         badge.style.display = "block";
         details.style.display = "block";
 
-        if (current >= target) {
+        if (isCompliant) {
             badge.innerText = "ملتزم";
             badge.className = "status-badge ok";
             needed.style.display = "none";
@@ -244,7 +262,7 @@
             badge.innerText = "غير ملتزم";
             badge.className = "status-badge no";
             needed.style.display = "block";
-            document.getElementById("neededCount").innerText = missing > 0 ? missing : 0;
+            document.getElementById("neededCount").innerText = missing;
         }
 
         document.getElementById("salaryStack").innerHTML = job.salaries.map(s => `<div class="info-cell">${s}</div>`).join('');
