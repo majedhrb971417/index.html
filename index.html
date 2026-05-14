@@ -217,8 +217,8 @@
         it_pro: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 7000 ريال"], note: "تشمل المبرمجين والتقنيين." },
         it_support: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 5000 ريال"], note: "الدعم الفني والمساندة." },
         marketing: { rates: {"default":0.6}, salaries: ["الحد الأدنى: 5500 ريال"], note: "توطين مهن التسويق." },
-        sales: { rates: {"default":0.6}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين مهن المبيعات." },
-        procurement: { rates: {"default":0.7}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين المشتريات." },
+        sales: { rates: {"default":0.6}, salaries: ["حسب النظام"], note: "توطين مهن المبيعات." },
+        procurement: { rates: {"default":0.7}, salaries: ["حسب النظام"], note: "توطين المشتريات." },
         legal: { rates: {"default":0.7}, salaries: ["الحد الأدنى: 5500 ريال"], note: "المهن القانونية والاستشارية." }
     };
 
@@ -233,22 +233,15 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
-        // حساب إجمالي السعوديين المستهدفين (الرقم الخام)
         const factor = targetRate / (1 - targetRate);
         const totalRawTarget = factor * expats;
         
-        // تعديل: "العدد المطلوب" يظهر الفارق (النقص) فقط بالبوينت
-        // إذا كان عندك سعوديين كفاية يظهر 0، وإذا فيه نقص يظهر الفارق
         let displayDiff = totalRawTarget - saudisCurrent;
         document.getElementById("exactDisplay").innerText = displayDiff > 0 ? displayDiff.toFixed(2) : "0.00";
         
-        // قاعدة التقريب للقرار النهائي (أقل من 0.5 ينزل، 0.5 وأعلى يطلع)
         let finalRequired = Math.round(totalRawTarget);
-        
-        // حساب النقص للتوظيف الفعلي
         let missing = finalRequired - saudisCurrent;
 
-        // تحديث الواجهة
         const totalNow = expats + saudisCurrent;
         const currentRate = totalNow > 0 ? (saudisCurrent / totalNow) : 0;
         document.getElementById("targetDisplay").innerText = (targetRate * 100) + "%";
