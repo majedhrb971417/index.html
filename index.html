@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -80,17 +81,6 @@
             width: 100%; padding: 12px; margin-top: 8px;
             border: 1px solid #cbd5e1; border-radius: 15px; font-size: 1rem;
             background: #ffffff;
-        }
-
-        .exact-val-box {
-            margin-top: 15px;
-            padding: 10px;
-            background: #f1f5f9;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            color: #475569;
-            text-align: center;
-            border: 1px dashed #cbd5e1;
         }
 
         .display-box { margin-top: 20px; padding: 20px; border-radius: 20px; text-align: center; color: white; }
@@ -176,13 +166,8 @@
             <h3>👥 عدد الموظفين</h3>
             <label>عدد الأجانب:</label>
             <input type="number" id="expats" value="0" min="0" oninput="run()">
-            
             <label>عدد السعوديين الحالي:</label>
             <input type="number" id="saudis" value="0" min="0" oninput="run()">
-
-            <div class="exact-val-box">
-                العدد المطلوب: <strong id="exactDisplay">0.00</strong>
-            </div>
 
             <div class="display-box current-box">
                 <span style="font-size: 0.8rem; opacity: 0.9;">التوطين الحالي</span>
@@ -217,8 +202,8 @@
         it_pro: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 7000 ريال"], note: "تشمل المبرمجين والتقنيين." },
         it_support: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 5000 ريال"], note: "الدعم الفني والمساندة." },
         marketing: { rates: {"default":0.6}, salaries: ["الحد الأدنى: 5500 ريال"], note: "توطين مهن التسويق." },
-        sales: { rates: {"default":0.6}, salaries: ["حسب النظام"], note: "توطين مهن المبيعات." },
-        procurement: { rates: {"default":0.7}, salaries: ["حسب النظام"], note: "توطين المشتريات." },
+        sales: { rates: {"default":0.6}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين مهن المبيعات." },
+        procurement: { rates: {"default":0.7}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين المشتريات." },
         legal: { rates: {"default":0.7}, salaries: ["الحد الأدنى: 5500 ريال"], note: "المهن القانونية والاستشارية." }
     };
 
@@ -233,31 +218,19 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
+        // 1. حساب معامل التوطين (النسبة المطلوبة مقابل كل أجنبي واحد)
         const factor = targetRate / (1 - targetRate);
-        const totalRawNeeded = factor * expats;
         
-        // حساب الفارق الخام (العدد المطلوب في الخانة الرمادية)
-        let diff = totalRawNeeded - saudisCurrent;
-        document.getElementById("exactDisplay").innerText = diff.toFixed(2);
-
-        let isCompliant = true;
-        let missingToHire = 0;
-
-        // قاعدة الـ 0.50 الصارمة (للقرار والجبر)
-        // نستخدم Math.round لأنه رياضياً يحقق قاعدتك (0.5 ينجبر للأعلى و0.49 للأسفل)
-        let roundedNeededTotal = Math.round(totalRawNeeded);
+        // 2. حساب عدد السعوديين المطلوبين "خام"
+        const rawNeeded = factor * expats;
         
-        // النقص الفعلي بعد الجبر
-        let finalMissing = roundedNeededTotal - saudisCurrent;
-
-        // تحديد الالتزام بناءً على الفارق 0.50
-        if (diff >= 0.50) {
-            isCompliant = false;
-            missingToHire = finalMissing;
-        } else {
-            isCompliant = true;
-            missingToHire = 0;
-        }
+        // 3. قاعدة التقريب الرياضية (Math.round):
+        // 2.49 تصبح 2
+        // 2.50 تصبح 3
+        let finalRequired = Math.round(rawNeeded);
+        
+        // 4. حساب النقص الفعلي
+        let missing = finalRequired - saudisCurrent;
 
         // تحديث الواجهة
         const totalNow = expats + saudisCurrent;
@@ -272,7 +245,7 @@
         badge.style.display = "block";
         details.style.display = "block";
 
-        if (isCompliant) {
+        if (missing <= 0) {
             badge.innerText = "ملتزم";
             badge.className = "status-badge ok";
             needed.style.display = "none";
@@ -280,7 +253,7 @@
             badge.innerText = "غير ملتزم";
             badge.className = "status-badge no";
             needed.style.display = "block";
-            document.getElementById("neededCount").innerText = missingToHire;
+            document.getElementById("neededCount").innerText = missing;
         }
 
         document.getElementById("salaryStack").innerHTML = job.salaries.map(s => `<div class="info-cell">${s}</div>`).join('');
