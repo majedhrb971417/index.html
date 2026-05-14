@@ -233,11 +233,11 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
-        // 1. حساب معامل التوطين بناءً على طريقتك
+        // 1. حساب إجمالي السعوديين المستهدفين (الرقم الخام)
         const factor = targetRate / (1 - targetRate);
         const totalRawTarget = factor * expats;
         
-        // 2. حساب الفارق (النقص) بالبوينت لعرضه في الخانة الرمادية
+        // 2. تحديث "العدد المطلوب" ليظهر الفارق (النقص) فقط
         let displayDiff = totalRawTarget - saudisCurrent;
         document.getElementById("exactDisplay").innerText = displayDiff > 0 ? displayDiff.toFixed(2) : "0.00";
         
