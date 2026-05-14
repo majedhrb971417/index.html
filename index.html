@@ -233,19 +233,22 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
-        // 1. حساب إجمالي السعوديين المستهدفين (الرقم الخام)
+        // 1. حساب معامل التوطين بناءً على طريقتك
         const factor = targetRate / (1 - targetRate);
-        const totalRawTarget = factor * expats;
+        const totalRawNeeded = factor * expats;
         
-        // 2. تحديث "العدد المطلوب" ليظهر الفارق (النقص) فقط
-        let displayDiff = totalRawTarget - saudisCurrent;
-        document.getElementById("exactDisplay").innerText = displayDiff > 0 ? displayDiff.toFixed(2) : "0.00";
+        // 2. حساب الفارق الحقيقي بالبوينت لعرضه في الخانة الرمادية
+        let diffRaw = totalRawTargetSubtractCurrent = totalRawNeeded - saudisCurrent;
         
-        // 3. قاعدة التقريب للقرار النهائي (أقل من 0.5 ينزل، 0.5 وأعلى يطلع)
-        let finalRequired = Math.round(totalRawTarget);
+        // عرض الفارق الدقيق (0.5، 2.4، 4.5 إلخ)
+        document.getElementById("exactDisplay").innerText = diffRaw > 0 ? diffRaw.toFixed(2) : "0.00";
         
-        // 4. حساب النقص للتوظيف الفعلي
-        let missing = finalRequired - saudisCurrent;
+        // 3. قاعدة الجبر (التقريب المنطقي):
+        // 0.5 وأعلى ينجبر للي فوق، 0.49 وأقل ينجبر للي تحت
+        let roundedTotalNeeded = Math.round(totalRawNeeded);
+        
+        // 4. حساب النقص المتبقي بعد الجبر
+        let missingForTawtheef = roundedTotalNeeded - saudisCurrent;
 
         // تحديث الواجهة
         const totalNow = expats + saudisCurrent;
@@ -260,7 +263,8 @@
         badge.style.display = "block";
         details.style.display = "block";
 
-        if (missing <= 0) {
+        // إذا كان النقص بعد الجبر صفر أو أقل يعني ملتزم
+        if (missingForTawtheef <= 0) {
             badge.innerText = "ملتزم";
             badge.className = "status-badge ok";
             needed.style.display = "none";
@@ -268,7 +272,7 @@
             badge.innerText = "غير ملتزم";
             badge.className = "status-badge no";
             needed.style.display = "block";
-            document.getElementById("neededCount").innerText = missing;
+            document.getElementById("neededCount").innerText = missingForTawtheef;
         }
 
         document.getElementById("salaryStack").innerHTML = job.salaries.map(s => `<div class="info-cell">${s}</div>`).join('');
