@@ -3,17 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة التوطين</title>
+    <title>حاسبة التوطين الذكية</title>
     <style>
         :root {
-            --header-bg: #475569; 
-            --sky-soft: #f0f9ff; 
-            --blue-light: #e0f2fe; 
-            --green-light: #f0fdf4; 
-            --royal-blue: #2563eb;
-            --emerald-600: #059669;
-            --rose-600: #e11d48;
-            --bg-page: #cbd5e1; 
+            /* باليتة الألوان المعتمدة والمثبتة */
+            --bg-page: #f1f5f9;        /* خلفية الصفحة رمادي نظيف وخفيف */
+            --gray-dark: #334155;      /* رصاصي غامق مخصص لمربع العنوان الرئيسي */
+            --gray-light: #f8fafc;     /* رصاصي فاتح للكروت الأساسية */
+            --gray-medium: #cbd5e1;    /* رصاصي أغمق شوي لكارت الشروط */
+            
+            --green-light-bg: #dcfce7; /* أخضر فاتح للامتثال والتوظيف */
+            --green-main-text: #15803d;
+            --green-emblem: #16a34a;   /* الأخضر العشبي للشعار الدائري الضخم */
+            
+            --red-light-bg: #fee2e2;   /* أحمر فاتح لعدم الالتزام والنسب المخالفة */
+            --red-main-text: #b91c1c;
+            --red-emblem: #dc2626;     /* الأحمر الياقوتي للشعار الضخم */
+
+            --blue-light-bg: #e0f2fe;  /* أزرق فاتح رايق ومثبت للنسبة النظامية */
+            --blue-main-text: #0369a1;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,117 +31,214 @@
             font-family: 'Segoe UI', Tahoma, sans-serif;
             padding: 40px 20px;
             direction: rtl;
+            color: #1e293b;
         }
 
-        .container { max-width: 1250px; margin: auto; }
+        .container { max-width: 1400px; margin: auto; }
 
+        /* المربع الكبير للعنوان باللون الرصاصي الغامق الفخم */
         header {
-            background: var(--header-bg);
-            padding: 40px; 
-            border-radius: 30px; 
-            text-align: center; 
-            margin: 0 auto 40px auto;
-            color: #fff; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 100%;
+            background: var(--gray-dark);
+            padding: 35px; border-radius: 24px; text-align: center; 
+            margin: 0 auto 35px auto; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%;
+            border: 1px solid #1e293b;
         }
 
-        header h1 { font-size: 2.2rem; margin-bottom: 10px; }
-        header p { font-size: 1rem; opacity: 0.9; }
+        header h1 { font-size: 2.3rem; margin-bottom: 10px; color: #ffffff; font-weight: 800; }
+        header p { font-size: 1.1rem; color: #cbd5e1; font-weight: 600; }
 
+        /* الشبكة العلوية الكبيرة المربعات جنب بعضها */
         .dashboard-grid {
             display: flex;
             gap: 25px;
             justify-content: center;
             align-items: stretch;
             flex-wrap: nowrap;
+            margin-bottom: 25px;
         }
 
+        /* التصميم الأساسي للكروت بنصوص واضحة وكبيرة */
         .card {
-            border-radius: 30px;
-            padding: 35px;
+            border-radius: 24px;
+            padding: 32px;
             flex: 1;
-            min-width: 380px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 330px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.01);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(0,0,0,0.05);
-            background-color: white; 
+            border: 1px solid #e2e8f0;
+            font-size: 1.05rem;
         }
 
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            z-index: 5;
+        .card:hover, .bottom-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
         }
 
-        .settings-card { background-color: var(--sky-soft); border-top: 8px solid #0ea5e9; }
-        .stats-card { background-color: var(--blue-light); border-top: 8px solid var(--royal-blue); }
-        .result-card { background-color: var(--green-light); border-top: 8px solid var(--emerald-600); }
+        /* تطبيق رصاصي فاتح لكارت المعايير والموظفين */
+        .settings-card { background-color: var(--gray-light); color: #334155; border-top: 6px solid #94a3b8; }
+        .stats-card { background-color: var(--gray-light); color: #334155; border-top: 6px solid #64748b; }
+        
+        /* كارت الالتزام الأساسي المربع الكبير التفاعلي بالكامل */
+        .result-card-style {
+            background-color: #ffffff;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            transition: all 0.4s ease;
+        }
 
-        h3 { font-size: 1.3rem; margin-bottom: 20px; text-align: center; color: #334155; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 10px; }
+        /* الشبكة السفلية للمربعين جنب بعض */
+        .bottom-grid {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            align-items: stretch;
+            flex-wrap: nowrap;
+            margin-bottom: 25px;
+        }
 
-        label { display: block; margin-top: 15px; font-weight: 600; color: #64748b; font-size: 0.85rem; }
+        .bottom-card {
+            border-radius: 24px;
+            padding: 32px;
+            flex: 1;
+            min-width: 45%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.01);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+            font-size: 1.05rem;
+        }
+
+        /* كارت التوظيف المباشر بلون أخضر فاتح دائماً */
+        .direct-hire-card { 
+            background-color: var(--green-light-bg); 
+            color: var(--green-main-text); 
+            border-top: 6px solid #22c55e; 
+        }
+        
+        /* كارت الشروط رصاصي أغمق شوي */
+        .details-card { 
+            background-color: var(--gray-medium); 
+            color: #0f172a; 
+            border-top: 6px solid var(--gray-dark); 
+        }
+
+        h3 { font-size: 1.4rem; margin-bottom: 20px; text-align: center; padding-bottom: 12px; font-weight: 800; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .direct-hire-card h3 { border-bottom: 1px solid rgba(21, 128, 61, 0.15); }
+
+        label { display: block; margin-top: 15px; font-weight: 700; opacity: 0.95; font-size: 0.95rem; color: #334155; }
 
         select, input {
-            width: 100%; padding: 12px; margin-top: 8px;
-            border: 1px solid #cbd5e1; border-radius: 15px; font-size: 1rem;
-            background: #ffffff;
+            width: 100%; padding: 14px; margin-top: 10px;
+            border: 1px solid #cbd5e1; border-radius: 14px; font-size: 1.05rem;
+            background: #ffffff; outline: none; transition: all 0.3s;
+            color: #0f172a; font-weight: 700;
+        }
+        select option { color: #1e293b; background: white; }
+        select:focus, input:focus { border-color: #64748b; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.02); }
+
+        /* مستطيلات عرض النسب الفخمة التفاعلية */
+        .display-box { 
+            margin-top: auto; padding: 18px; border-radius: 16px; text-align: center; 
+            font-weight: bold; border: 1px solid #cbd5e1; transition: all 0.4s ease;
+        }
+        .big-val { font-size: 2.7rem; font-weight: 900; display: block; margin-top: 4px; transition: color 0.4s ease; }
+
+        /* الشعار الدائري الضخم المقتبس حرفياً من صورتك المرفقة */
+        .status-emblem-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            margin: 5px auto 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            /* تأثير النبض التلقائي المستمر يكبر ويصغر نفسه على كامل الدائرة والكلمة بالداخل */
+            animation: emblemPulse 2.4s infinite ease-in-out;
+            transition: all 0.4s ease;
+        }
+        
+        .status-emblem-circle.ok { background-color: var(--green-emblem); }
+        .status-emblem-circle.no { background-color: var(--red-emblem); }
+
+        /* أيقونة علامة الصح أو الخطأ العريضة داخل الشعار */
+        .emblem-icon {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 2px;
         }
 
-        .display-box { margin-top: 20px; padding: 20px; border-radius: 20px; text-align: center; color: white; }
-        .target-box { background: linear-gradient(135deg, #0284c7, #0ea5e9); }
-        .current-box { background: linear-gradient(135deg, #1d4ed8, #2563eb); }
-        .big-val { font-size: 2.8rem; font-weight: 900; display: block; }
-
-        .status-badge {
-            font-size: 1.4rem; font-weight: 800; text-align: center;
-            padding: 12px; border-radius: 15px; margin-bottom: 20px;
+        /* كلمة ملتزم أو غير ملتزم بداخل الشعار بالأسفل */
+        .emblem-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
-        .status-badge.ok { color: #065f46; background: #d1fae5; border: 1px solid #a7f3d0; }
-        .status-badge.no { color: #991b1b; background: #fee2e2; border: 1px solid #fecaca; }
 
+        /* أنيميشن التكبير والتصغير التلقائي المستمر للشعار والكلمة */
+        @keyframes emblemPulse {
+            0% { transform: scale(1); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+            50% { transform: scale(1.06); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
+            100% { transform: scale(1); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+        }
+
+        /* مستطيل الأرقام والنتائج النظيف السفلي */
         .needed-alert {
-            background: #fff1f2; border: 1px solid #fecdd3; border-radius: 20px;
-            padding: 20px; text-align: center; margin-bottom: 20px;
-            animation: softPulse 2s infinite ease-in-out;
+            background: #ffffff; border: 1px solid #cbd5e1; border-radius: 18px;
+            padding: 18px; text-align: center; margin-top: auto; width: 100%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+        
+        .big-number-display {
+            font-size: 3.5rem; font-weight: 900; display: block; margin: 4px 0;
+            color: #0f172a;
+        }
+        
+        .direct-hire-val {
+            font-size: 4rem; font-weight: 900; display: block;
+            color: var(--green-main-text); margin: 10px 0;
         }
 
-        @keyframes softPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); box-shadow: 0 0 15px rgba(225, 29, 72, 0.2); }
-            100% { transform: scale(1); }
-        }
-
+        /* تنسيق الأجور داخل المربع السفلي الرصاصي */
         .info-cell {
-            background: #ffffff; padding: 14px; border-radius: 12px;
-            margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;
-            color: #475569; border-right: 5px solid #0ea5e9;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            background: #ffffff; padding: 15px; border-radius: 14px;
+            margin-bottom: 12px; font-weight: 700; font-size: 1.05rem;
+            color: var(--gray-dark); border-right: 6px solid var(--gray-dark); width: 100%;
+            border-left: 1px solid #cbd5e1; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;
         }
 
         .condition-cell {
-            background: #ffffff; padding: 15px; border-radius: 12px;
-            font-size: 0.85rem; color: #64748b; border: 1px solid #e2e8f0;
-            border-right: 5px solid var(--royal-blue); line-height: 1.6;
+            background: #ffffff; padding: 18px; border-radius: 14px;
+            font-size: 1rem; color: var(--gray-dark); border: 1px solid #cbd5e1;
+            line-height: 1.6; width: 100%; font-weight: 600;
+            border-right: 6px solid var(--gray-dark);
         }
 
-        @media (max-width: 1100px) { .dashboard-grid { flex-wrap: wrap; } .card { min-width: 100%; } }
+        @media (max-width: 1100px) { 
+            .dashboard-grid, .bottom-grid { flex-wrap: wrap; } 
+            .card, .bottom-card { min-width: 100%; } 
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>حاسبة التوطين</h1>
-        <p>نظام تفاعلي متقدم لمتابعة نسب التوطين والاشتراطات المهنية</p>
+        <h1>حاسبة التوطين الذكية</h1>
+        <p>نظام ذكي لمتابعة نسبة الامتثال للمهن</p>
     </header>
 
     <div class="dashboard-grid">
         <div class="card settings-card">
             <h3>📋 معايير المهنة</h3>
-            <label>السنة المستهدفة:</label>
+            <label>السنة المستهدفة للمنشأة:</label>
             <select id="yearSelect" onchange="run()">
                 <option value="2026">2026</option>
                 <option value="2027">2027</option>
@@ -141,7 +246,7 @@
                 <option value="2029">2029</option>
             </select>
 
-            <label>التخصص المهني:</label>
+            <label>التخصص المهني المطلوب:</label>
             <select id="jobSelect" onchange="run()">
                 <option value="">-- اختر المهنة --</option>
                 <option value="accounting">المحاسبة</option>
@@ -155,40 +260,57 @@
                 <option value="legal">القانونية</option>
             </select>
 
-            <div class="display-box target-box">
-                <span style="font-size: 0.8rem; opacity: 0.9;">المستهدف المطلوب</span>
-                <strong id="targetDisplay" class="big-val">0%</strong>
+            <div class="display-box" id="targetBox" style="background-color: var(--blue-light-bg); border-color: #bae6fd;">
+                <span style="font-size: 0.9rem; opacity: 0.95; color: var(--blue-main-text); font-weight: 700;">النسبة المراد تحقيقها نظاماً</span>
+                <strong id="targetDisplay" class="big-val" style="color: var(--blue-main-text);">0%</strong>
             </div>
         </div>
 
         <div class="card stats-card">
-            <h3>👥 عدد الموظفين</h3>
-            <label>عدد الأجانب:</label>
+            <h3>👥 موظفي المنشأة الحالية</h3>
+            <label>عدد الموظفين الأجانب الحالي:</label>
             <input type="number" id="expats" value="0" min="0" oninput="run()">
-            <label>عدد السعوديين الحالي:</label>
+            
+            <label>عدد الموظفين السعوديين الحالي:</label>
             <input type="number" id="saudis" value="0" min="0" oninput="run()">
 
-            <div class="display-box current-box">
-                <span style="font-size: 0.8rem; opacity: 0.9;">التوطين الحالي</span>
+            <div class="display-box" id="currentBox">
+                <span id="currentLabel" style="font-size: 0.9rem; opacity: 0.95; font-weight: 700;">نسبة التوطين الحالية المحققة</span>
                 <strong id="currentDisplay" class="big-val">0%</strong>
             </div>
         </div>
 
-        <div class="card result-card">
-            <h3>📑 نتيجة الالتزام</h3>
-            <div id="statusBadge" class="status-badge" style="display:none;"></div>
+        <div id="mainResultCard" class="card result-card-style" style="display:none;">
+            <h3>📑 حالة الامتثال والالتزام</h3>
+            
+            <div id="statusEmblem" class="status-emblem-circle"></div>
 
-            <div id="neededArea" class="needed-alert" style="display:none;">
-                <span style="font-size: 0.85rem; font-weight: 700;">أنت بحاجة لتوظيف:</span>
-                <strong id="neededCount" style="font-size: 3rem; display: block;">0</strong>
-                <span style="font-size: 0.8rem;">سعودي إضافي للالتزام</span>
+            <div id="neededArea" class="needed-alert">
+                <div style="margin-bottom: 10px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.95rem; font-weight: 700; color: #64748b;">العدد المطلوب الفعلي:</span>
+                    <strong id="rawNeededCount" style="font-size: 1.25rem; color: #1e293b;">0.00</strong>
+                </div>
+                <span style="font-size: 0.95rem; font-weight: 700; color: #475569;" id="actionLabel">الاحتياج بالتوظيف (الاستبدال):</span>
+                <strong id="neededCount" class="big-number-display">0</strong>
+                <span style="font-size: 0.9rem; font-weight: 700; color: #94a3b8;" id="subLabel">موظف سعودي مطلوب للالتزام</span>
             </div>
+        </div>
+    </div>
 
-            <div id="detailsArea" style="display:none;">
-                <label>الحد الأدنى للأجور والاشتراطات:</label>
-                <div id="salaryStack"></div>
-                <div id="conditionInfo" class="condition-cell"></div>
+    <div class="bottom-grid">
+        <div id="directHireCard" class="bottom-card direct-hire-card" style="display:none;">
+            <h3>💡 خيار التوظيف المباشر (صافي زيادة تقريبي)</h3>
+            <div style="text-align: center; margin-top: auto; margin-bottom: auto; width: 100%;">
+                <span style="font-size: 1.05rem; font-weight: 700; display: block; opacity: 0.95; color: var(--green-main-text);">عدد الموظفين السعوديين الجدد المطلوب تعيينهم فوراً (دون الاستغناء عن أي موظف أجنبي):</span>
+                <strong id="directHireCount" class="direct-hire-val">0</strong>
+                <span style="font-size: 0.95rem; font-weight: 700; opacity: 0.85; color: var(--green-main-text);">موظف سعودي إضافي صافي لتلبية متطلبات النسبة كاملة</span>
             </div>
+        </div>
+
+        <div id="detailsArea" class="bottom-card details-card" style="display:none;">
+            <h3>📌 الأجور والاشتراطات المهنية المعتمدة</h3>
+            <div id="salaryStack" style="width: 100%;"></div>
+            <div id="conditionInfo" class="condition-cell" style="margin-top: auto;"></div>
         </div>
     </div>
 </div>
@@ -199,10 +321,10 @@
         engineering: { rates: {"default":0.3}, salaries: ["الحد الأدنى: 8000 ريال"], note: "عضوية SEC إلزامية." },
         tech_eng: { rates: {"default":0.3}, salaries: ["الحد الأدنى: 5000 ريال"], note: "عضوية SEC إلزامية." },
         it_pro: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 7000 ريال"], note: "تشمل المبرمجين والتقنيين." },
-        it_support: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 5000 ريال"], note: "الدعم الفني والمساندة." },
+        it_support: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 5000 ريال"], note: "الدعم الفني والمساندة والاتصالات." },
         marketing: { rates: {"default":0.6}, salaries: ["الحد الأدنى: 5500 ريال"], note: "توطين مهن التسويق." },
-        sales: { rates: {"default":0.6}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين مهن المبيعات." },
-        procurement: { rates: {"default":0.7}, salaries: ["لا يوجد حد أدنى للأجور"], note: "توطين المشتريات." },
+        sales: { rates: {"default":0.4}, salaries: ["وفقاً للنظام والتوجيهات المعتمدة."], note: "توطين مهن المبيعات." },
+        procurement: { rates: {"default":0.7}, salaries: ["وفقاً للنظام والتوجيهات المعتمدة."], note: "توطين المشتريات." },
         legal: { rates: {"default":0.7}, salaries: ["الحد الأدنى: 5500 ريال"], note: "المهن القانونية والاستشارية." }
     };
 
@@ -217,52 +339,109 @@
         const job = dataBank[jobKey];
         const targetRate = job.rates[year] || job.rates["default"];
         
-        // تطبيق معادلة "معامل التوطين" بناءً على شرحك
-        // مثال القانونية 70%: 70 / (100 - 70) = 2.333
-        const factor = targetRate / (1 - targetRate);
-        
-        // حساب عدد السعوديين المطلوبين (بدقة)
-        const saudisNeededRaw = factor * expats;
-        
-        // حساب الفرق بين المطلوب والحالي
-        let diff = saudisNeededRaw - saudisCurrent;
+        const totalEmployees = expats + saudisCurrent;
+        const rawTargetAmount = totalEmployees * targetRate;
+        const rawDifference = rawTargetAmount - saudisCurrent;
 
-        let missing = 0;
-        let isCompliant = false;
+        let finalReplacement = 0;
 
-        // قاعدة الجبر الخاصة بك:
-        // إذا كان الفرق 0.4 وأقل -> ملتزم
-        // إذا كان الفرق أكثر من 0.4 -> غير ملتزم ويجبر للأعلى (مثال: 14.5 تصير 15)
-        if (diff <= 0.4) {
-            isCompliant = true;
+        // تطبيق الدالة والمعادلة الثابتة والمثبتة بيننا بدقة تامة
+        if (rawDifference > 0) {
+            const integerPart = Math.floor(rawDifference);
+            const decimalPart = Number((rawDifference - integerPart).toFixed(4));
+
+            if (decimalPart >= 0.50) {
+                finalReplacement = Math.ceil(rawDifference); 
+            } else {
+                finalReplacement = integerPart; 
+            }
         } else {
-            isCompliant = false;
-            missing = Math.ceil(diff); 
+            finalReplacement = 0; 
         }
 
-        // حساب النسبة الحالية للعرض فقط
-        const totalNow = expats + saudisCurrent;
-        const currentRate = totalNow > 0 ? (saudisCurrent / totalNow) : 0;
+        let isCompliant = (finalReplacement <= 0);
 
+        // حساب التوظيف المباشر التقريبي في المربع السفلي
+        let finalDirectHire = 0;
+        if (!isCompliant && expats > 0) {
+            const ratePerExpat = targetRate / (1 - targetRate);
+            const totalSaudisNeededDirect = ratePerExpat * expats;
+            const rawDirectDifference = totalSaudisNeededDirect - saudisCurrent;
+
+            if (rawDirectDifference > 0) {
+                const intDirect = Math.floor(rawDirectDifference);
+                const decDirect = Number((rawDirectDifference - intDirect).toFixed(4));
+
+                if (decDirect >= 0.50) {
+                    finalDirectHire = Math.ceil(rawDirectDifference);
+                } else {
+                    finalDirectHire = intDirect;
+                }
+            }
+        }
+
+        const currentRate = totalEmployees > 0 ? (saudisCurrent / totalEmployees) : 0;
         document.getElementById("targetDisplay").innerText = (targetRate * 100) + "%";
         document.getElementById("currentDisplay").innerText = (currentRate * 100).toFixed(0) + "%";
 
-        const badge = document.getElementById("statusBadge");
-        const needed = document.getElementById("neededArea");
+        const mainResultCard = document.getElementById("mainResultCard");
+        const emblem = document.getElementById("statusEmblem");
+        const directHireCard = document.getElementById("directHireCard");
         const details = document.getElementById("detailsArea");
+        
+        const currentBox = document.getElementById("currentBox");
+        const currentLabel = document.getElementById("currentLabel");
+        const currentDisplay = document.getElementById("currentDisplay");
 
-        badge.style.display = "block";
-        details.style.display = "block";
+        mainResultCard.style.display = "flex";
+        details.style.display = "flex";
 
+        document.getElementById("rawNeededCount").innerText = rawDifference.toFixed(2);
+
+        // حقن تصميم الشعار الدائري التفاعلي الجديد وتلوين المربع بالكامل حسب الحالة
         if (isCompliant) {
-            badge.innerText = "ملتزم";
-            badge.className = "status-badge ok";
-            needed.style.display = "none";
+            // الشعار المقتبس للملتزم (دائرة خضراء ممتلئة بالكامل تلمع بالداخل مع النبض)
+            emblem.innerHTML = '<div class="emblem-icon">✓</div><div class="emblem-text">ملتزم</div>';
+            emblem.className = "status-emblem-circle ok";
+            
+            // المربع بالكامل يقلب أخضر فاتح
+            mainResultCard.style.backgroundColor = "var(--green-light-bg)";
+            mainResultCard.style.borderColor = "#bbf7d0";
+            
+            // تلوين مربع نسبة التوطين الحالية المحققة
+            currentBox.style.backgroundColor = "var(--blue-light-bg)";
+            currentBox.style.borderColor = "#bae6fd";
+            currentLabel.style.color = "var(--blue-main-text)";
+            currentDisplay.style.color = "var(--blue-main-text)";
+
+            document.getElementById("neededCount").innerText = "0";
+            document.getElementById("neededCount").style.color = "#16a34a";
+            document.getElementById("actionLabel").innerText = "الاحتياج الحالي بالتوظيف:";
+            document.getElementById("subLabel").innerText = "المنشأة ملتزمة تماماً ومحققة للنسبة النظامية";
+            
+            directHireCard.style.display = "none";
         } else {
-            badge.innerText = "غير ملتزم";
-            badge.className = "status-badge no";
-            needed.style.display = "block";
-            document.getElementById("neededCount").innerText = missing;
+            // الشعار المقتبس لغير الملتزم (دائرة حمراء ممتلئة بالكامل تنبض بالتنبيه)
+            emblem.innerHTML = '<div class="emblem-icon">✕</div><div class="emblem-text">غير ملتزم</div>';
+            emblem.className = "status-emblem-circle no";
+            
+            // المربع بالكامل يقلب أحمر فاتح
+            mainResultCard.style.backgroundColor = "var(--red-light-bg)";
+            mainResultCard.style.borderColor = "#fecdd3";
+
+            // تلوين مربع نسبة التوطين الحالية المحققة فوراً للأحمر
+            currentBox.style.backgroundColor = "var(--red-light-bg)";
+            currentBox.style.borderColor = "#fecdd3";
+            currentLabel.style.color = "var(--red-main-text)";
+            currentDisplay.style.color = "var(--red-main-text)";
+
+            document.getElementById("neededCount").innerText = finalReplacement;
+            document.getElementById("neededCount").style.color = "#dc2626";
+            document.getElementById("actionLabel").innerText = "الاحتياج بالتوظيف للالتزام (حسب الجبر):";
+            document.getElementById("subLabel").innerText = "موظف سعودي مطلوب تعيينه كبديل لأجنبي للالتزام بالعدد الحالي";
+            
+            directHireCard.style.display = "flex";
+            document.getElementById("directHireCount").innerText = finalDirectHire;
         }
 
         document.getElementById("salaryStack").innerHTML = job.salaries.map(s => `<div class="info-cell">${s}</div>`).join('');
