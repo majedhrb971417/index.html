@@ -7,221 +7,180 @@
     <style>
         :root {
             /* باليتة الألوان المعتمدة والمثبتة */
-            --bg-page: #f1f5f9;        /* خلفية الصفحة رمادي نظيف وخفيف */
-            --gray-dark: #334155;      /* رصاصي غامق مخصص لمربع العنوان الرئيسي */
-            --gray-light: #f8fafc;     /* رصاصي فاتح للكروت الأساسية */
-            --gray-medium: #cbd5e1;    /* رصاصي أغمق شوي لكارت الشروط */
+            --bg-page: #f1f5f9;        
+            --gray-dark: #334155;      
+            --gray-light: #f8fafc;     
+            --gray-medium: #cbd5e1;    
             
-            --green-light-bg: #dcfce7; /* أخضر فاتح للامتثال والتوظيف */
-            --green-main-text: #15803d;
-            --green-emblem: #16a34a;   /* الأخضر العشبي للشعار الدائري الضخم */
+            --green-light-bg: #e8fced; 
+            --red-light-bg: #fee2e2;   
             
-            --red-light-bg: #fee2e2;   /* أحمر فاتح لعدم الالتزام والنسب المخالفة */
-            --red-main-text: #b91c1c;
-            --red-emblem: #dc2626;     /* الأحمر الياقوتي للشعار الضخم */
+            --green-emblem-soft: #86efac; 
+            --green-emblem-text: #166534; 
+            
+            --red-emblem-soft: #fca5a5;   
+            --red-emblem-text: #991b1b;   
 
-            --blue-light-bg: #e0f2fe;  /* أزرق فاتح رايق ومثبت للنسبة النظامية */
+            --green-main-text: #15803d;
+            --blue-light-bg: #e0f2fe;  
             --blue-main-text: #0369a1;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        /* تعديل الارتفاع ليكون ملموم في صفحة واحدة */
         body { 
             background-color: var(--bg-page);
             font-family: 'Segoe UI', Tahoma, sans-serif;
-            padding: 40px 20px;
+            padding: 15px 20px;
             direction: rtl;
             color: #1e293b;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* لمنع النزول بالماوس والتثبيت في صفحة واحدة */
         }
 
-        .container { max-width: 1400px; margin: auto; }
+        .container { max-width: 1400px; margin: auto; width: 100%; display: flex; flex-direction: column; gap: 15px; }
 
-        /* المربع الكبير للعنوان باللون الرصاصي الغامق الفخم */
+        /* تقليل أبعاد الهيدر ليصبح ملموم */
         header {
             background: var(--gray-dark);
-            padding: 35px; border-radius: 24px; text-align: center; 
-            margin: 0 auto 35px auto; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%;
+            padding: 15px; border-radius: 16px; text-align: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02); width: 100%;
             border: 1px solid #1e293b;
         }
 
-        header h1 { font-size: 2.3rem; margin-bottom: 10px; color: #ffffff; font-weight: 800; }
-        header p { font-size: 1.1rem; color: #cbd5e1; font-weight: 600; }
+        header h1 { font-size: 1.6rem; margin-bottom: 4px; color: #ffffff; font-weight: 800; }
+        header p { font-size: 0.9rem; color: #cbd5e1; font-weight: 600; }
 
-        /* الشبكة العلوية الكبيرة المربعات جنب بعضها */
+        /* الشبكة العلوية المربعات جنب بعضها */
         .dashboard-grid {
             display: flex;
-            gap: 25px;
+            gap: 15px;
             justify-content: center;
             align-items: stretch;
             flex-wrap: nowrap;
-            margin-bottom: 25px;
         }
 
-        /* التصميم الأساسي للكروت بنصوص واضحة وكبيرة */
+        /* تصغير حجم الكروت الداخلية لتوفر مساحة عمودية */
         .card {
-            border-radius: 24px;
-            padding: 32px;
+            border-radius: 18px;
+            padding: 20px;
             flex: 1;
-            min-width: 330px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.01);
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 300px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             border: 1px solid #e2e8f0;
-            font-size: 1.05rem;
-        }
-
-        .card:hover, .bottom-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
         }
 
         /* تطبيق رصاصي فاتح لكارت المعايير والموظفين */
-        .settings-card { background-color: var(--gray-light); color: #334155; border-top: 6px solid #94a3b8; }
-        .stats-card { background-color: var(--gray-light); color: #334155; border-top: 6px solid #64748b; }
+        .settings-card { background-color: var(--gray-light); color: #334155; border-top: 5px solid #94a3b8; }
+        .stats-card { background-color: var(--gray-light); color: #334155; border-top: 5px solid #64748b; }
         
-        /* كارت الالتزام الأساسي المربع الكبير التفاعلي بالكامل */
         .result-card-style {
             background-color: #ffffff;
             color: #1e293b;
             border: 1px solid #cbd5e1;
-            transition: all 0.4s ease;
         }
 
         /* الشبكة السفلية للمربعين جنب بعض */
         .bottom-grid {
             display: flex;
-            gap: 25px;
+            gap: 15px;
             justify-content: center;
             align-items: stretch;
             flex-wrap: nowrap;
-            margin-bottom: 25px;
         }
 
         .bottom-card {
-            border-radius: 24px;
-            padding: 32px;
+            border-radius: 18px;
+            padding: 20px;
             flex: 1;
             min-width: 45%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.01);
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             border: 1px solid #e2e8f0;
-            font-size: 1.05rem;
         }
 
-        /* كارت التوظيف المباشر بلون أخضر فاتح دائماً */
-        .direct-hire-card { 
-            background-color: var(--green-light-bg); 
-            color: var(--green-main-text); 
-            border-top: 6px solid #22c55e; 
-        }
-        
-        /* كارت الشروط رصاصي أغمق شوي */
-        .details-card { 
-            background-color: var(--gray-medium); 
-            color: #0f172a; 
-            border-top: 6px solid var(--gray-dark); 
-        }
+        .direct-hire-card { background-color: var(--green-light-bg); color: var(--green-main-text); border-top: 5px solid #22c55e; }
+        .details-card { background-color: var(--gray-medium); color: #0f172a; border-top: 5px solid var(--gray-dark); }
 
-        h3 { font-size: 1.4rem; margin-bottom: 20px; text-align: center; padding-bottom: 12px; font-weight: 800; border-bottom: 1px solid rgba(0,0,0,0.06); }
-        .direct-hire-card h3 { border-bottom: 1px solid rgba(21, 128, 61, 0.15); }
+        h3 { font-size: 1.1rem; margin-bottom: 10px; text-align: center; padding-bottom: 8px; font-weight: 800; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .direct-hire-card h3 { border-bottom: 1px solid rgba(21, 128, 61, 0.12); }
 
-        label { display: block; margin-top: 15px; font-weight: 700; opacity: 0.95; font-size: 0.95rem; color: #334155; }
+        label { display: block; margin-top: 8px; font-weight: 700; opacity: 0.95; font-size: 0.85rem; color: #475569; }
 
         select, input {
-            width: 100%; padding: 14px; margin-top: 10px;
-            border: 1px solid #cbd5e1; border-radius: 14px; font-size: 1.05rem;
-            background: #ffffff; outline: none; transition: all 0.3s;
+            width: 100%; padding: 8px 12px; margin-top: 6px;
+            border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem;
+            background: #ffffff; outline: none; transition: all 0.2s;
             color: #0f172a; font-weight: 700;
         }
-        select option { color: #1e293b; background: white; }
-        select:focus, input:focus { border-color: #64748b; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.02); }
 
-        /* مستطيلات عرض النسب الفخمة التفاعلية */
+        /* مستطيلات عرض النسب */
         .display-box { 
-            margin-top: auto; padding: 18px; border-radius: 16px; text-align: center; 
-            font-weight: bold; border: 1px solid #cbd5e1; transition: all 0.4s ease;
+            margin-top: auto; padding: 10px; border-radius: 12px; text-align: center; 
+            font-weight: bold; border: 1px solid #cbd5e1;
         }
-        .big-val { font-size: 2.7rem; font-weight: 900; display: block; margin-top: 4px; transition: color 0.4s ease; }
+        .big-val { font-size: 2rem; font-weight: 900; display: block; margin-top: 2px; }
 
-        /* الشعار الدائري الضخم المقتبس حرفياً من صورتك المرفقة */
-        .status-emblem-circle {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            margin: 5px auto 20px auto;
+        /* تصغير حجم الشعار المربع وتناسقه */
+        .status-emblem-box {
+            width: 90%;
+            padding: 12px;
+            border-radius: 14px;
+            margin: 5px auto 10px auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #ffffff !important;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-            /* تأثير النبض التلقائي المستمر يكبر ويصغر نفسه على كامل الدائرة والكلمة بالداخل */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
             animation: emblemPulse 2.4s infinite ease-in-out;
-            transition: all 0.4s ease;
         }
         
-        .status-emblem-circle.ok { background-color: var(--green-emblem); }
-        .status-emblem-circle.no { background-color: var(--red-emblem); }
+        .status-emblem-box.ok { background-color: var(--green-emblem-soft); color: var(--green-emblem-text) !important; }
+        .status-emblem-box.no { background-color: var(--red-emblem-soft); color: var(--red-emblem-text) !important; }
 
-        /* أيقونة علامة الصح أو الخطأ العريضة داخل الشعار */
-        .emblem-icon {
-            font-size: 3rem;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 2px;
-        }
+        .emblem-icon { font-size: 2rem; font-weight: 900; line-height: 1; margin-bottom: 2px; }
+        .emblem-text { font-size: 1.15rem; font-weight: 800; }
 
-        /* كلمة ملتزم أو غير ملتزم بداخل الشعار بالأسفل */
-        .emblem-text {
-            font-size: 1.4rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        /* أنيميشن التكبير والتصغير التلقائي المستمر للشعار والكلمة */
         @keyframes emblemPulse {
-            0% { transform: scale(1); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
-            50% { transform: scale(1.06); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
-            100% { transform: scale(1); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
         }
 
         /* مستطيل الأرقام والنتائج النظيف السفلي */
         .needed-alert {
-            background: #ffffff; border: 1px solid #cbd5e1; border-radius: 18px;
-            padding: 18px; text-align: center; margin-top: auto; width: 100%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px;
+            padding: 10px; text-align: center; margin-top: auto; width: 100%;
         }
         
-        .big-number-display {
-            font-size: 3.5rem; font-weight: 900; display: block; margin: 4px 0;
-            color: #0f172a;
-        }
-        
-        .direct-hire-val {
-            font-size: 4rem; font-weight: 900; display: block;
-            color: var(--green-main-text); margin: 10px 0;
-        }
+        .big-number-display { font-size: 2.3rem; font-weight: 900; display: block; margin: 2px 0; color: #0f172a; }
+        .direct-hire-val { font-size: 2.6rem; font-weight: 900; display: block; color: var(--green-main-text); margin: 5px 0; }
 
-        /* تنسيق الأجور داخل المربع السفلي الرصاصي */
+        /* تنسيق الأجور */
         .info-cell {
-            background: #ffffff; padding: 15px; border-radius: 14px;
-            margin-bottom: 12px; font-weight: 700; font-size: 1.05rem;
-            color: var(--gray-dark); border-right: 6px solid var(--gray-dark); width: 100%;
+            background: #ffffff; padding: 10px; border-radius: 10px;
+            margin-bottom: 8px; font-weight: 700; font-size: 0.9rem;
+            color: var(--gray-dark); border-right: 5px solid var(--gray-dark); width: 100%;
             border-left: 1px solid #cbd5e1; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;
         }
 
         .condition-cell {
-            background: #ffffff; padding: 18px; border-radius: 14px;
-            font-size: 1rem; color: var(--gray-dark); border: 1px solid #cbd5e1;
-            line-height: 1.6; width: 100%; font-weight: 600;
-            border-right: 6px solid var(--gray-dark);
+            background: #ffffff; padding: 12px; border-radius: 10px;
+            font-size: 0.85rem; color: var(--gray-dark); border: 1px solid #cbd5e1;
+            line-height: 1.5; width: 100%; font-weight: 600;
+            border-right: 5px solid var(--gray-dark);
         }
 
         @media (max-width: 1100px) { 
+            body { overflow: auto; height: auto; }
             .dashboard-grid, .bottom-grid { flex-wrap: wrap; } 
             .card, .bottom-card { min-width: 100%; } 
         }
@@ -261,21 +220,21 @@
             </select>
 
             <div class="display-box" id="targetBox" style="background-color: var(--blue-light-bg); border-color: #bae6fd;">
-                <span style="font-size: 0.9rem; opacity: 0.95; color: var(--blue-main-text); font-weight: 700;">النسبة المراد تحقيقها نظاماً</span>
+                <span style="font-size: 0.8rem; opacity: 0.95; color: var(--blue-main-text); font-weight: 700;">النسبة المراد تحقيقها نظاماً</span>
                 <strong id="targetDisplay" class="big-val" style="color: var(--blue-main-text);">0%</strong>
             </div>
         </div>
 
         <div class="card stats-card">
             <h3>👥 موظفي المنشأة الحالية</h3>
-            <label>عدد الموظفين الأجانب الحالي:</label>
+            <label>عدد الأجانب الحالي:</label>
             <input type="number" id="expats" value="0" min="0" oninput="run()">
             
-            <label>عدد الموظفين السعوديين الحالي:</label>
+            <label>عدد السعوديين الحالي:</label>
             <input type="number" id="saudis" value="0" min="0" oninput="run()">
 
             <div class="display-box" id="currentBox">
-                <span id="currentLabel" style="font-size: 0.9rem; opacity: 0.95; font-weight: 700;">نسبة التوطين الحالية المحققة</span>
+                <span id="currentLabel" style="font-size: 0.8rem; opacity: 0.95; font-weight: 700;">نسبة التوطين الحالية المحققة</span>
                 <strong id="currentDisplay" class="big-val">0%</strong>
             </div>
         </div>
@@ -283,16 +242,16 @@
         <div id="mainResultCard" class="card result-card-style" style="display:none;">
             <h3>📑 حالة الامتثال والالتزام</h3>
             
-            <div id="statusEmblem" class="status-emblem-circle"></div>
+            <div id="statusEmblem" class="status-emblem-box"></div>
 
             <div id="neededArea" class="needed-alert">
-                <div style="margin-bottom: 10px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.95rem; font-weight: 700; color: #64748b;">العدد المطلوب الفعلي:</span>
-                    <strong id="rawNeededCount" style="font-size: 1.25rem; color: #1e293b;">0.00</strong>
+                <div style="margin-bottom: 6px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: #64748b;">العدد المطلوب الفعلي:</span>
+                    <strong id="rawNeededCount" style="font-size: 1.1rem; color: #1e293b;">0.00</strong>
                 </div>
-                <span style="font-size: 0.95rem; font-weight: 700; color: #475569;" id="actionLabel">الاحتياج بالتوظيف (الاستبدال):</span>
+                <span style="font-size: 0.8rem; font-weight: 700; color: #475569;" id="actionLabel">الاحتياج بالتوظيف (الاستبدال):</span>
                 <strong id="neededCount" class="big-number-display">0</strong>
-                <span style="font-size: 0.9rem; font-weight: 700; color: #94a3b8;" id="subLabel">موظف سعودي مطلوب للالتزام</span>
+                <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8;" id="subLabel">موظف سعودي مطلوب للالتزام</span>
             </div>
         </div>
     </div>
@@ -301,9 +260,9 @@
         <div id="directHireCard" class="bottom-card direct-hire-card" style="display:none;">
             <h3>💡 خيار التوظيف المباشر (صافي زيادة تقريبي)</h3>
             <div style="text-align: center; margin-top: auto; margin-bottom: auto; width: 100%;">
-                <span style="font-size: 1.05rem; font-weight: 700; display: block; opacity: 0.95; color: var(--green-main-text);">عدد الموظفين السعوديين الجدد المطلوب تعيينهم فوراً (دون الاستغناء عن أي موظف أجنبي):</span>
+                <span style="font-size: 0.85rem; font-weight: 700; display: block; opacity: 0.95; color: var(--green-main-text);">عدد الموظفين السعوديين الجدد المطلوب تعيينهم فوراً (دون الاستغناء عن أي أجنبي):</span>
                 <strong id="directHireCount" class="direct-hire-val">0</strong>
-                <span style="font-size: 0.95rem; font-weight: 700; opacity: 0.85; color: var(--green-main-text);">موظف سعودي إضافي صافي لتلبية متطلبات النسبة كاملة</span>
+                <span style="font-size: 0.8rem; font-weight: 700; opacity: 0.85; color: var(--green-main-text);">موظف سعودي إضافي صافي لتلبية متطلبات النسبة كاملة</span>
             </div>
         </div>
 
@@ -345,7 +304,7 @@
 
         let finalReplacement = 0;
 
-        // تطبيق الدالة والمعادلة الثابتة والمثبتة بيننا بدقة تامة
+        // تطبيق قاعدة الجبر والتقريب المعتمدة
         if (rawDifference > 0) {
             const integerPart = Math.floor(rawDifference);
             const decimalPart = Number((rawDifference - integerPart).toFixed(4));
@@ -361,7 +320,6 @@
 
         let isCompliant = (finalReplacement <= 0);
 
-        // حساب التوظيف المباشر التقريبي في المربع السفلي
         let finalDirectHire = 0;
         if (!isCompliant && expats > 0) {
             const ratePerExpat = targetRate / (1 - targetRate);
@@ -398,17 +356,13 @@
 
         document.getElementById("rawNeededCount").innerText = rawDifference.toFixed(2);
 
-        // حقن تصميم الشعار الدائري التفاعلي الجديد وتلوين المربع بالكامل حسب الحالة
         if (isCompliant) {
-            // الشعار المقتبس للملتزم (دائرة خضراء ممتلئة بالكامل تلمع بالداخل مع النبض)
             emblem.innerHTML = '<div class="emblem-icon">✓</div><div class="emblem-text">ملتزم</div>';
-            emblem.className = "status-emblem-circle ok";
+            emblem.className = "status-emblem-box ok";
             
-            // المربع بالكامل يقلب أخضر فاتح
             mainResultCard.style.backgroundColor = "var(--green-light-bg)";
             mainResultCard.style.borderColor = "#bbf7d0";
             
-            // تلوين مربع نسبة التوطين الحالية المحققة
             currentBox.style.backgroundColor = "var(--blue-light-bg)";
             currentBox.style.borderColor = "#bae6fd";
             currentLabel.style.color = "var(--blue-main-text)";
@@ -421,15 +375,12 @@
             
             directHireCard.style.display = "none";
         } else {
-            // الشعار المقتبس لغير الملتزم (دائرة حمراء ممتلئة بالكامل تنبض بالتنبيه)
             emblem.innerHTML = '<div class="emblem-icon">✕</div><div class="emblem-text">غير ملتزم</div>';
-            emblem.className = "status-emblem-circle no";
+            emblem.className = "status-emblem-box no";
             
-            // المربع بالكامل يقلب أحمر فاتح
             mainResultCard.style.backgroundColor = "var(--red-light-bg)";
             mainResultCard.style.borderColor = "#fecdd3";
 
-            // تلوين مربع نسبة التوطين الحالية المحققة فوراً للأحمر
             currentBox.style.backgroundColor = "var(--red-light-bg)";
             currentBox.style.borderColor = "#fecdd3";
             currentLabel.style.color = "var(--red-main-text)";
