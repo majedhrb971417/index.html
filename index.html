@@ -24,6 +24,10 @@
             --green-main-text: #15803d;
             --blue-light-bg: #e0f2fe;  
             --blue-main-text: #0369a1;
+            
+            /* ألوان أزرار التواصل المعتمدة */
+            --contact-green-light: #bbf7d0;
+            --contact-icon-green: #22c55e;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,9 +44,8 @@
             overflow: hidden; 
         }
 
-        /* تعديل المظهر ليكون ملموم بالمنتصف كأن الصفحة معمول لها زووم 80% */
         .container { 
-            max-width: 1080px; /* تصغير عرض الحاوية لتترك مساحات فخمة على الأطراف */
+            max-width: 1080px; 
             margin: auto; 
             width: 100%; 
             display: flex; 
@@ -68,7 +71,6 @@
             flex-wrap: nowrap;
         }
 
-        /* التصميم النظيف الملموم للكروت */
         .card, .bottom-card {
             border-radius: 16px;
             padding: 18px;
@@ -77,7 +79,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* تأثير النبض التفاعلي الفخم عند وضع الماوس */
+        /* تأثير النبض التفاعلي عند وضع الماوس */
         .card:hover, .bottom-card:hover {
             animation: cardPulseHover 1.8s infinite ease-in-out;
             border-color: #cbd5e1;
@@ -105,7 +107,7 @@
 
         .bottom-card {
             flex: 1;
-            max-width: 440px; /* تصغير عرض المربعات السفلية لتتناسق مع الـ 80% */
+            max-width: 440px; 
             min-width: 280px;
             display: flex;
             flex-direction: column;
@@ -178,6 +180,94 @@
             font-size: 0.8rem; color: var(--gray-dark); border: 1px solid #cbd5e1;
             line-height: 1.4; width: 100%; font-weight: 600;
             border-right: 5px solid var(--gray-dark);
+        }
+
+        /* ==================== الدائرة العائمة ومربع التواصل المطور بالكامل ==================== */
+        /* الدائرة العائمة باللون الأخضر الفاتح والناعم المتناسق */
+        .contact-trigger {
+            position: fixed;
+            bottom: 25px;
+            left: 25px; 
+            width: 50px;
+            height: 50px;
+            background-color: var(--contact-green-light);
+            color: var(--green-emblem-text); 
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 2px solid #a7f3d0;
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        .contact-trigger:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 6px 18px rgba(34, 197, 94, 0.25);
+            background-color: #a7f3d0;
+        }
+
+        .contact-popup {
+            position: fixed;
+            bottom: 85px;
+            left: 25px;
+            width: 290px;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none; 
+            flex-direction: column;
+            gap: 12px;
+            animation: popupFade 0.3s ease-out;
+        }
+
+        @keyframes popupFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .contact-popup h4 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--gray-dark);
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 6px;
+            text-align: center;
+        }
+
+        .contact-link {
+            text-decoration: none;
+            display: block;
+            transition: transform 0.2s;
+        }
+        .contact-link:hover {
+            transform: translateX(-3px);
+        }
+
+        .contact-row {
+            background-color: var(--bg-page);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #475569;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-right: 4px solid var(--blue-main-text);
+        }
+
+        .contact-row span:last-child {
+            color: #0f172a;
+            font-size: 0.9rem;
+            direction: ltr;
+            text-align: right;
+            word-break: break-all;
         }
 
         @media (max-width: 1100px) { 
@@ -275,7 +365,44 @@
     </div>
 </div>
 
+<div class="contact-trigger" onclick="toggleContactPopup()">📞</div>
+
+<div class="contact-popup" id="contactPopup">
+    <h4>📞 للتواصل والدعم الفني</h4>
+    
+    <a href="https://wa.me/966532219777" target="_blank" class="contact-link">
+        <div class="contact-row" style="border-right-color: #25d366;">
+            <span style="color: var(--contact-icon-green); font-weight: 800;">📞 WhatsApp:</span>
+            <span>0532219777</span>
+        </div>
+    </a>
+    
+    <a href="https://www.linkedin.com/in/majed-alharbi-shrm-cp-2651071b6" target="_blank" class="contact-link">
+        <div class="contact-row" style="border-right-color: #0077b5;">
+            <span style="color: #0077b5; font-weight: 800;">🌐 LinkedIn:</span>
+            <span>majed-alharbi-shrm-cp-2651071b6</span>
+        </div>
+    </a>
+</div>
+
 <script>
+    function toggleContactPopup() {
+        const popup = document.getElementById("contactPopup");
+        if (popup.style.display === "flex") {
+            popup.style.display = "none";
+        } else {
+            popup.style.display = "flex";
+        }
+    }
+
+    window.onclick = function(event) {
+        const popup = document.getElementById("contactPopup");
+        const trigger = document.querySelector(".contact-trigger");
+        if (event.target !== popup && event.target !== trigger && !popup.contains(event.target)) {
+            popup.style.display = "none";
+        }
+    }
+
     const dataBank = {
         accounting: { rates: {"2026":0.4, "2027":0.5, "2028":0.6, "2029":0.7}, salaries: ["بكالوريوس: 6000 ريال", "دبلوم: 4500 ريال"], note: "عضوية SOCPA إلزامية." },
         engineering: { rates: {"default":0.3}, salaries: ["الحد الأدنى: 8000 ريال"], note: "عضوية SEC إلزامية." },
@@ -305,6 +432,7 @@
 
         let finalReplacement = 0;
 
+        // دالتنا ومعادلتنا المعتمدة والسرية ثابتة ومحمية بالملّي
         if (rawDifference > 0) {
             const integerPart = Math.floor(rawDifference);
             const decimalPart = Number((rawDifference - integerPart).toFixed(4));
