@@ -182,7 +182,6 @@
             border-right: 5px solid var(--gray-dark);
         }
 
-        /* ==================== الدائرة العائمة ومربع التواصل المطور بالكامل ==================== */
         /* الدائرة العائمة باللون الأخضر الفاتح والناعم المتناسق */
         .contact-trigger {
             position: fixed;
@@ -410,7 +409,7 @@
         it_pro: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 7000 ريال"], note: "تشمل المبرمجين والتقنيين." },
         it_support: { rates: {"default":0.25}, salaries: ["الحد الأدنى: 5000 ريال"], note: "الدعم الفني والمساندة والاتصالات." },
         marketing: { rates: {"default":0.6}, salaries: ["الحد الأدنى: 5500 ريال"], note: "توطين مهن التسويق." },
-        sales: { rates: {"default":0.4}, salaries: ["وفقاً للنظام والتوجيهات المعتمدة."], note: "توطين مهن المبيعات." },
+        sales: { rates: {"default":0.6}, salaries: ["وفقاً للنظام والتوجيهات المعتمدة."], note: "توطين مهن المبيعات." }, /* تم تعديل النسبة هنا إلى 60% */
         procurement: { rates: {"default":0.7}, salaries: ["وفقاً للنظام والتوجيهات المعتمدة."], note: "توطين المشتريات." },
         legal: { rates: {"default":0.7}, salaries: ["الحد الأدنى: 5500 ريال"], note: "المهن القانونية والاستشارية." }
     };
@@ -432,7 +431,6 @@
 
         let finalReplacement = 0;
 
-        // دالتنا ومعادلتنا المعتمدة والسرية ثابتة ومحمية بالملّي
         if (rawDifference > 0) {
             const integerPart = Math.floor(rawDifference);
             const decimalPart = Number((rawDifference - integerPart).toFixed(4));
